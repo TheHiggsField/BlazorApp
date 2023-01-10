@@ -8,8 +8,13 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+
+<button class="btn btn-primary" @onclick="AzureADLogin.PseudoPrincipal.LoginAD">Login</button>
+
 @code {
     private int currentCount = 0;
+    private AzureADLogin.PseudoPrincipal pseudoPrincipal = new AzureADLogin.PseudoPrincipal();
+
 
     private void IncrementCount()
     {

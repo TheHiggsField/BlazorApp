@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "oaksrPxU70O5xkyzYidMxls4FMlFGqSyUO/4U3QDNDU50FkYqzxF19YNCEq/IJ9GP9QnhKTt7jBFr27YXiwvLw==",
+  "dgSpecHash": "xkyaeG204GRUHcbkTvFIfnc4FbCaK4+jPN6nfB799zTyDkvAWE20eViq6QafCSWP92WSfSdkK70xMosz5uw+tQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\rlr\\OneDrive - Commentor\\source\\repos\\BlazorApp\\BlazorApp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\rlr\\.nuget\\packages\\microsoft.identity.client\\4.49.1\\microsoft.identity.client.4.49.1.nupkg.sha512",
+    "C:\\Users\\rlr\\.nuget\\packages\\microsoft.identitymodel.abstractions\\6.22.0\\microsoft.identitymodel.abstractions.6.22.0.nupkg.sha512"
+  ],
   "logs": []
 }
