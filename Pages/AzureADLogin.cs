@@ -14,7 +14,7 @@ namespace AzureADLogin
             var app = PublicClientApplicationBuilder
                 .Create(_clientId)
                 .WithAuthority(AzureCloudInstance.AzurePublic, _tenantId)
-                .WithRedirectUri("https://azure.riksted.eu/counter")
+                .WithRedirectUri("http://localhost:5082/counter")
                 .Build(); 
             string[] scopes = {  };
             AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
