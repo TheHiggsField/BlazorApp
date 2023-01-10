@@ -14,13 +14,13 @@
 
 <button class="btn btn-primary" @onclick="ListBlobsAsync">List Blobs</button>
 
-<p role="status">Current count: @blobs</p>
+<p role="status">Current count: @blobsString</p>
 
 @code {
     private int currentCount = 0;
     private AzureADLogin.PseudoPrincipal pseudoPrincipal = new AzureADLogin.PseudoPrincipal();
 
-    private string blobs = "No blobs found yet.";
+    private string blobsString = "Has not searched for blobs yet.";
 
 
     private void IncrementCount()
@@ -30,10 +30,21 @@
 
     private async void ListBlobsAsync()
     {
-        var dblobs = await Storage.Blobs.MyListBlobsAsync("storagethf", "randomstuff");
+        var blobNames = await Storage.Blobs.MyListBlobsAsync("storagethf", "randomstuff");
 
         
-        blobs = ( dblobs != null && dblobs.Any() )? dblobs.ToString() : "No blobs found.";
+        if ( blobNames != null && blobNames.Any() )
+        {
+            blobsString = "";
+            foreach (string blobName in blobNames)
+            {
+                blobsString += blobName + ",\t"; 
+            }
+        }
+        else
+        {
+            blobsString = "No blobs found.";
+        }
         
     }
 
