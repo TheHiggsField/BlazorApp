@@ -15,10 +15,10 @@ namespace AzureADLogin
                 .Create(_clientId)
                 .WithAuthority(AzureCloudInstance.AzurePublic, _tenantId)
                 .WithRedirectUri("http://localhost:5082/counter")
-                .Build(); 
-            string[] scopes = {  };
+                .Build();
+            string[] scopes = { "Files.read" };
             AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
-
+            
             Console.WriteLine($"Token:\t{result.AccessToken}");
         }
     }
