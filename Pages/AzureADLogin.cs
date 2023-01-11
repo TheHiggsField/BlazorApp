@@ -9,12 +9,12 @@ namespace AzureADLogin
         private const string _clientId = "c79dd058-f5e8-4e61-8ce1-5dc194ba77b1";
         private const string _tenantId = "fdaef475-4076-49a6-afec-94a2a319d8db";
 
-        public static async Task LoginAD()
+        public static async Task LoginAD(string uri)
         {
             var app = PublicClientApplicationBuilder
                 .Create(_clientId)
                 .WithAuthority(AzureCloudInstance.AzurePublic, _tenantId)
-                .WithRedirectUri("http://localhost/")
+                .WithRedirectUri(uri)
                 .Build();
             string[] scopes = { "https://csb100320026571cde5.blob.core.windows.net/user_impersonation" };
             AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();

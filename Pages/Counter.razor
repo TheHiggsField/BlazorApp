@@ -5,11 +5,12 @@
 <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
+@inject NavigationManager MyNavigationManager
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 
-<button class="btn btn-primary" @onclick="AzureADLogin.PseudoPrincipal.LoginAD">Login</button>
+<button class="btn btn-primary" @onclick="Login">Login</button>
 
 
 <button class="btn btn-primary" @onclick="ListBlobsAsync">List Blobs</button>
@@ -26,6 +27,17 @@
     private void IncrementCount()
     {
         currentCount++;
+    }
+
+    private async void Login()
+    {
+        string redirectURI = MyNavigationManager.BaseUri;
+        if(redirectURI.Split(":").Length > 2)
+        {
+            redirectURI = "http:" + redirectURI.Split(":")[1] + "/";
+        }
+        blobsString = $"redirectURI = \n {redirectURI}";
+        await AzureADLogin.PseudoPrincipal.LoginAD(redirectURI);
     }
 
     private async void ListBlobsAsync()
