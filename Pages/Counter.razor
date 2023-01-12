@@ -9,6 +9,9 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<input value="@redirectURI" @oninput="(EventArgs) => {SetValue(EventArgs.Value.ToString());}"/>
+<p role="status">URI: @redirectURI</p>
+
 
 <button class="btn btn-primary" @onclick="Login">Login</button>
 
@@ -18,6 +21,19 @@
 <p role="status">Current count: @blobsString</p>
 
 @code {
+    string redirectURI = "";
+
+    private void SetValue(string Value)
+    {
+        redirectURI = Value;
+        
+    }
+
+    private void DoSomethingElse()
+    {
+        redirectURI = "DoSomethingElse";
+    }
+
     private int currentCount = 0;
     private AzureADLogin.PseudoPrincipal pseudoPrincipal = new AzureADLogin.PseudoPrincipal();
 
@@ -31,11 +47,11 @@
 
     private async void Login()
     {
-        string redirectURI = MyNavigationManager.BaseUri;
+        /*string redirectURI = MyNavigationManager.BaseUri;
         if(redirectURI.Split(":").Length > 2)
         {
             redirectURI = "http:" + redirectURI.Split(":")[1] + "/";
-        }
+        }*/
         blobsString = $"redirectURI = \n {redirectURI}";
         await AzureADLogin.PseudoPrincipal.LoginAD(redirectURI);
     }
