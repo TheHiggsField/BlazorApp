@@ -8,14 +8,15 @@
 @inject NavigationManager MyNavigationManager
 <button class="btn btn-primary" @onclick="GetToken">Click me</button>
 
-<input value="@redirectURI" @oninput="(EventArgs) => {SetValue(EventArgs.Value.ToString());}"/>
+<input value="@redirectURI" @oninput="(EventArgs) => {SetValue(EventArgs?.Value?.ToString());}"/>
 <a href=@redirectURI>URI: @redirectURI</a>
 
 
 <button class="btn btn-primary" @onclick="Login">Login</button>
 
 
-<button class="btn btn-primary" @onclick="ListBlobsAsync">List Blobs</button>
+<button class="btn btn-primary" @onclick="ListDefaultBlobsAsync">List Blobs (Default)</button>
+<button class="btn btn-primary" @onclick="ListUserBlobsAsync">List Blobs (user)</button>
 
 <p role="status">AuthZCode:@AuthZCode</p>
 
@@ -30,7 +31,8 @@
     private string blobsString = "Has not searched for blobs yet.";
  
     public string? AuthZCode { get; set; } = null;
-    
+    private Microsoft.Identity.Client.AuthenticationResult? token;
+
     string redirectURI = "";
 
     private void SetValue(string? Value)
@@ -47,8 +49,18 @@
             return;
         }
 
-        var response = await psPrincipal.GetTokenFromCode(AuthZCode);
-        blobsString = response != null ? response.ToString() : "null :-|";
+        token = await psPrincipal.GetTokenFromCode(AuthZCode);
+
+        if (token == null){
+
+            blobsString = "null :-|";
+            return;
+        }
+        
+        blobsString = token.CreateAuthorizationHeader();
+        
+
+        await Storage.Blobs.GetBlob("csb100320026571cde5", "randomstuff", "Les_problems.txt", token);
         return;
         
     }
@@ -66,9 +78,16 @@
         
     }
 
-    private async void ListBlobsAsync()
+    private async Task ListBlobsAsync(string accountName, string containerName, Azure.Core.TokenCredential? authZCredential)
     {
-        var blobNames = await Storage.Blobs.MyListBlobsAsync("csb100320026571cde5", "randomstuff");
+
+        
+        if (authZCredential == null){
+
+            return;
+        }
+
+        var blobNames = await Storage.Blobs.ListBlobsAsyncToken(accountName, containerName, authZCredential);
 
         
         if ( blobNames != null && blobNames.Any() )
@@ -84,6 +103,17 @@
             blobsString = "No blobs found.";
         }
         
+    }
+
+    private async void ListUserBlobsAsync()
+    {
+        var authZCredential = psPrincipal.GetAuthorizationCodeCredential(MyNavigationManager.Uri);
+        await ListBlobsAsync("csb100320026571cde5", "randomstuff", authZCredential);
+    }
+
+    private async void ListDefaultBlobsAsync()
+    {
+        await ListBlobsAsync("storagethf", "randomstuff", new Azure.Identity.DefaultAzureCredential());
     }
 
 }
