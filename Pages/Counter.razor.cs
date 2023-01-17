@@ -48,7 +48,10 @@ namespace BlazorApp.Pages {
             Console.WriteLine("This is OnInitializedAsync" );
 
         }
-
+        public void IncrementCounter()
+        {
+            currentCount++;
+        }
         public void SetValue(string? Value)
         {
             redirectURI = Value != null ? Value : "Null :-|";    

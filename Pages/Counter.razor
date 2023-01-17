@@ -7,7 +7,7 @@
 <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
-<button class="btn btn-primary" @onclick="GetToken">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementCounter">Click me</button>
 
 <input value="@redirectURI" @oninput="(EventArgs) => {SetValue(EventArgs?.Value?.ToString());}"/>
 <a href=@redirectURI>URI: @redirectURI</a>
