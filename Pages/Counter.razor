@@ -1,11 +1,12 @@
 ﻿@page "/counter"
 
+@inherits BlazorApp.Pages.CounterBase
+
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
-@inject NavigationManager MyNavigationManager
 <button class="btn btn-primary" @onclick="GetToken">Click me</button>
 
 <input value="@redirectURI" @oninput="(EventArgs) => {SetValue(EventArgs?.Value?.ToString());}"/>
@@ -16,104 +17,10 @@
 
 
 <button class="btn btn-primary" @onclick="ListDefaultBlobsAsync">List Blobs (Default)</button>
-<button class="btn btn-primary" @onclick="ListUserBlobsAsync">List Blobs (user)</button>
+
+<button hidden="@(authZCredential == null)" class="btn btn-primary" @onclick="ListUserBlobsAsync">List Blobs (User)</button>
+
 
 <p role="status">AuthZCode:@AuthZCode</p>
 
 <p role="status">blobsString: @blobsString</p>
-
-@code {
-
-    private int currentCount = 0;
-    private AzureADLogin.PseudoPrincipal pseudoPrincipal = new AzureADLogin.PseudoPrincipal();
-    private AzureADLogin.PseudoPrincipal psPrincipal = new AzureADLogin.PseudoPrincipal();
-
-    private string blobsString = "Has not searched for blobs yet.";
- 
-    public string? AuthZCode { get; set; } = null;
-    private Microsoft.Identity.Client.AuthenticationResult? token;
-
-    string redirectURI = "";
-
-    private void SetValue(string? Value)
-    {
-        redirectURI = Value != null ? Value : "Null :-|";    
-    }
-    private async void GetToken()
-    {
-
-        AuthZCode = psPrincipal.GetCodeFromUri(MyNavigationManager.Uri);
-        
-        if (AuthZCode == null){
-
-            return;
-        }
-
-        token = await psPrincipal.GetTokenFromCode(AuthZCode);
-
-        if (token == null){
-
-            blobsString = "null :-|";
-            return;
-        }
-        
-        blobsString = token.CreateAuthorizationHeader();
-        
-
-        await Storage.Blobs.GetBlob("csb100320026571cde5", "randomstuff", "Les_problems.txt", token);
-        return;
-        
-    }
-
-    private async void Login()
-    {
-        redirectURI = MyNavigationManager.Uri;
-        blobsString = $"redirectURI = \n {redirectURI}";
-        
-        var redirect  = await psPrincipal.GetAuthorizationRequestUrl(redirectURI);
-        
-        MyNavigationManager.NavigateTo(redirect.ToString(), true);
-
-        
-        
-    }
-
-    private async Task ListBlobsAsync(string accountName, string containerName, Azure.Core.TokenCredential? authZCredential)
-    {
-
-        
-        if (authZCredential == null){
-
-            return;
-        }
-
-        var blobNames = await Storage.Blobs.ListBlobsAsyncToken(accountName, containerName, authZCredential);
-
-        
-        if ( blobNames != null && blobNames.Any() )
-        {
-            blobsString = "";
-            foreach (string blobName in blobNames)
-            {
-                blobsString += blobName + ",\t"; 
-            }
-        }
-        else
-        {
-            blobsString = "No blobs found.";
-        }
-        
-    }
-
-    private async void ListUserBlobsAsync()
-    {
-        var authZCredential = psPrincipal.GetAuthorizationCodeCredential(MyNavigationManager.Uri);
-        await ListBlobsAsync("csb100320026571cde5", "randomstuff", authZCredential);
-    }
-
-    private async void ListDefaultBlobsAsync()
-    {
-        await ListBlobsAsync("storagethf", "randomstuff", new Azure.Identity.DefaultAzureCredential());
-    }
-
-}

@@ -11,14 +11,9 @@ namespace Storage
     
     
     class Blobs
-    {
-        BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri("https://storagethf.blob.core.windows.net"),
-                                                                    new DefaultAzureCredential());
-        
-            
+    {     
         private const string _clientId = "c79dd058-f5e8-4e61-8ce1-5dc194ba77b1";
         private const string _tenantId = "fdaef475-4076-49a6-afec-94a2a319d8db";
-        private const string _clientSecret = "NJR8Q~mw9R1cB5SjsnNaoI1sB15jEai8m9tOtbg1";
 
         public static async Task TestBlob(string accountName, string containerName, AuthenticationResult token)
         {
@@ -80,8 +75,9 @@ namespace Storage
             System.Uri containerEndpoint = new System.Uri(string.Format("https://{0}.blob.core.windows.net/{1}",
                                                             accountName,
                                                             containerName
-                                                ));
-        
+                                                        ));
+            
+
             // Get a credential and create a service client object for the blob container.
             BlobContainerClient containerClient = new BlobContainerClient(containerEndpoint, authZCredential );
 
@@ -91,6 +87,7 @@ namespace Storage
             {
                 BlobList.Add(blobItem.Name);
             }
+
 
             return BlobList;
         }
